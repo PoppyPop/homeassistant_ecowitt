@@ -1,10 +1,9 @@
 // See https://aka.ms/vscode-remote/devcontainer.json for format details.
 {
-  "name": "teleinformation Integration Development",
+  "name": "Ecowitt Integration Development",
   "image": "ghcr.io/ludeeus/devcontainer/integration:stable",
   "postCreateCommand": "container install",
   "context": "..",
-  "workspaceFolder": "/workspace",
   "appPort": ["9123:8123"],
   "extensions": [
     "ms-python.python",
