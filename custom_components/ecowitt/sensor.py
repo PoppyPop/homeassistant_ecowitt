@@ -3,6 +3,7 @@ import logging
 
 import homeassistant.util.dt as dt_util
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import DEVICE_CLASS_BATTERY
 from homeassistant.const import DEVICE_CLASS_TIMESTAMP
 from homeassistant.const import PERCENTAGE
@@ -37,13 +38,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
     add_entities(hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][TYPE_SENSOR])
 
 
-class EcowittSensor(EcowittEntity):
-    def __init__(self, hass, entry, key, name, dc, uom, icon):
+class EcowittSensor(EcowittEntity, SensorEntity):
+    def __init__(self, hass, entry, key, name, dc, uom, icon, sc):
         """Initialize the sensor."""
         super().__init__(hass, entry, key, name)
         self._icon = icon
         self._uom = uom
         self._dc = dc
+        self._sc = sc
 
     @property
     def state(self):
@@ -79,3 +81,8 @@ class EcowittSensor(EcowittEntity):
     def device_class(self):
         """Return the device class."""
         return self._dc
+
+    @property
+    def state_class(self):
+        """Return the state_class of the device."""
+        return self._sc

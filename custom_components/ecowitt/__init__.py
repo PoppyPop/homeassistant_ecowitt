@@ -161,7 +161,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     def check_imp_metric_sensor(sensor):
         """Check if this is the wrong sensor for our config (imp/metric)."""
         # Is this a metric or imperial sensor, lookup and skip
-        name, uom, kind, device_class, icon, metric = SENSOR_TYPES[sensor]
+        name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[sensor]
         if metric == 0:
             return True
         if "baro" in sensor:
@@ -225,7 +225,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if not check_imp_metric_sensor(sensor):
             return None
 
-        name, uom, kind, device_class, icon, metric = SENSOR_TYPES[sensor]
+        name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[sensor]
         ecowitt_data[REG_ENTITIES][kind].append(sensor)
         return kind
 
@@ -342,9 +342,9 @@ def async_add_ecowitt_entities(
     for new_entity in discovery_info:
         if new_entity not in hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform]:
             hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform].append(new_entity)
-        name, uom, kind, device_class, icon, metric = SENSOR_TYPES[new_entity]
+        name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[new_entity]
         entities.append(
-            entity_type(hass, entry, new_entity, name, device_class, uom, icon)
+            entity_type(hass, entry, new_entity, name, device_class, uom, icon, sc)
         )
     if entities:
         async_add_entities(entities, True)
