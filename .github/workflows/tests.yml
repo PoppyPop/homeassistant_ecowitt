@@ -50,7 +50,7 @@ jobs:
         uses: "hacs/action@21.2.2"
         with:
           category: "integration"
-          #ignore: brands wheels
+          ignore: brands
 
   hassfest:
     runs-on: "ubuntu-latest"
