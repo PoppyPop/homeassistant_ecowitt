@@ -1,6 +1,4 @@
-"""
-A bone-simple fake client used to test the hass integration
-"""
+"""A bone-simple fake client used to test the hass integration."""
 import http.client
 import time
 import urllib.parse
@@ -94,7 +92,7 @@ port = "4199"
 
 while True:
     try:
-        print("Connecting to host {0} on port {1}".format(host, port))
+        print(f"Connecting to host {host} on port {port}")
         conn = http.client.HTTPConnection(host, port)
         headers = {"Content-type": "application/x-www-form-urlencoded"}
 

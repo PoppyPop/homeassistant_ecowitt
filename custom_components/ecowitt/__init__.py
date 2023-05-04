@@ -14,7 +14,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_registry import (
-    async_get_registry as async_get_entity_registry,
+    async_get as async_get_entity_registry,
 )
 from pyecowitt import EcoWittListener
 from pyecowitt import WINDCHILL_HYBRID
@@ -305,6 +305,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 kind = check_and_append_sensor(sensor)
                 if kind is not None:
                     new_sensors[kind].append(sensor)
+            # It's a sensor we know, not ignored, and of the wrong metricness
             elif (
                 (
                     sensor in ecowitt_data[REG_ENTITIES][TYPE_SENSOR]
@@ -313,13 +314,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 and sensor not in IGNORED_SENSORS
                 and not check_imp_metric_sensor(sensor)
             ):
-                _LOGGER.warning(
-                    "Removing sensor type %s.",
-                    sensor,
-                )
+                _LOGGER.warning("Removing sensor type %s.", sensor)
                 old_sensors.append(sensor)
 
-        # if we have old sensors, delete them.
+        # If we have old sensors, delete them.
         if old_sensors:
             await async_remove_ecowitt_entities(old_sensors, hass, ecowitt_data)
 
@@ -356,10 +354,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 
 async def async_remove_ecowitt_entities(entities, hass, ecowitt_data):
-    """Remove an sensor if needed."""
+    """Remove a sensor if needed."""
 
     try:
-
         eventData = {}
         for entity in entities:
             name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[entity]
@@ -384,13 +381,9 @@ def async_add_ecowitt_entities(
         if new_entity not in hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform]:
             hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform].append(new_entity)
         name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[new_entity]
-
-        newEntity = entity_type(
-            hass, entry, new_entity, name, device_class, uom, icon, sc
+        entities.append(
+            entity_type(hass, entry, new_entity, name, device_class, uom, icon, sc)
         )
-        async_dispatcher_connect(hass, SIGNAL_REMOVE_ENTITIES, newEntity.remove_entity)
-        entities.append(newEntity)
-
     if entities:
         async_add_entities(entities, True)
 
@@ -449,9 +442,9 @@ class EcowittEntity(Entity):
 
     @callback
     async def remove_entity(self, discovery_info=None):
+        """Remove an entity."""
 
         if self._key in discovery_info.keys():
-
             registry = await async_get_entity_registry(self.hass)
 
             entity_id = registry.async_get_entity_id(

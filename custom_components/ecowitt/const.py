@@ -3,6 +3,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOISTURE,
 )
 from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT
+from homeassistant.components.sensor import STATE_CLASS_TOTAL_INCREASING
 from homeassistant.const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 from homeassistant.const import CONCENTRATION_PARTS_PER_MILLION
 from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
@@ -27,7 +28,6 @@ from homeassistant.const import SPEED_KILOMETERS_PER_HOUR
 from homeassistant.const import SPEED_METERS_PER_SECOND
 from homeassistant.const import SPEED_MILES_PER_HOUR
 from homeassistant.const import TEMP_CELSIUS
-from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.const import TIME_DAYS
 from homeassistant.const import TIME_HOURS
 from homeassistant.const import TIME_MONTHS
@@ -203,22 +203,22 @@ TYPE_LEAKBATT5 = "leakbatt5"
 TYPE_LEAKBATT6 = "leakbatt6"
 TYPE_LEAKBATT7 = "leakbatt7"
 TYPE_LEAKBATT8 = "leakbatt8"
-TYPE_TF_CH1 = "tf_ch1"
-TYPE_TF_CH2 = "tf_ch2"
-TYPE_TF_CH3 = "tf_ch3"
-TYPE_TF_CH4 = "tf_ch4"
-TYPE_TF_CH5 = "tf_ch5"
-TYPE_TF_CH6 = "tf_ch6"
-TYPE_TF_CH7 = "tf_ch7"
-TYPE_TF_CH8 = "tf_ch8"
-TYPE_TF_BATT1 = "tf_batt1"
-TYPE_TF_BATT2 = "tf_batt2"
-TYPE_TF_BATT3 = "tf_batt3"
-TYPE_TF_BATT4 = "tf_batt4"
-TYPE_TF_BATT5 = "tf_batt5"
-TYPE_TF_BATT6 = "tf_batt6"
-TYPE_TF_BATT7 = "tf_batt7"
-TYPE_TF_BATT8 = "tf_batt8"
+TYPE_WN34TEMP1C = "tf_ch1c"
+TYPE_WN34TEMP2C = "tf_ch2c"
+TYPE_WN34TEMP3C = "tf_ch3c"
+TYPE_WN34TEMP4C = "tf_ch4c"
+TYPE_WN34TEMP5C = "tf_ch5c"
+TYPE_WN34TEMP6C = "tf_ch6c"
+TYPE_WN34TEMP7C = "tf_ch7c"
+TYPE_WN34TEMP8C = "tf_ch8c"
+TYPE_WN34BATT1 = "tf_batt1"
+TYPE_WN34BATT2 = "tf_batt2"
+TYPE_WN34BATT3 = "tf_batt3"
+TYPE_WN34BATT4 = "tf_batt4"
+TYPE_WN34BATT5 = "tf_batt5"
+TYPE_WN34BATT6 = "tf_batt6"
+TYPE_WN34BATT7 = "tf_batt7"
+TYPE_WN34BATT8 = "tf_batt8"
 
 S_METRIC = 1
 S_IMPERIAL = 2
@@ -241,7 +241,7 @@ WINDCHILL_OPTS = [W_TYPE_HYBRID, W_TYPE_NEW, W_TYPE_OLD]
 
 
 # Name, unit_of_measure, type, device_class, icon, metric=1, state_class
-# name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[x]
+# name, uom, kind, device_class, icon, metric, state_class = SENSOR_TYPES[x]
 SENSOR_TYPES = {
     TYPE_BAROMABSHPA: (
         "Absolute Pressure",
@@ -250,7 +250,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_PRESSURE,
         "mdi:gauge",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_BAROMRELHPA: (
         "Relative Pressure",
@@ -259,7 +259,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_PRESSURE,
         "mdi:gauge",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_BAROMABSIN: (
         "Absolute Pressure",
@@ -268,7 +268,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_PRESSURE,
         "mdi:gauge",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_BAROMRELIN: (
         "Relative Pressure",
@@ -277,7 +277,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_PRESSURE,
         "mdi:gauge",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_RAINRATEIN: (
         "Rain Rate",
@@ -286,7 +286,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_EVENTRAININ: (
         "Event Rain Rate",
@@ -295,7 +295,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_HOURLYRAININ: (
         "Hourly Rain Rate",
@@ -304,7 +304,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_TOTALRAININ: (
         "Total Rain Rate",
@@ -313,7 +313,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_DAILYRAININ: (
         "Daily Rain Rate",
@@ -322,7 +322,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_WEEKLYRAININ: (
         "Weekly Rain Rate",
@@ -331,7 +331,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_MONTHLYRAININ: (
         "Monthly Rain Rate",
@@ -340,7 +340,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_YEARLYRAININ: (
         "Yearly Rain Rate",
@@ -349,7 +349,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_RAINRATEMM: (
         "Rain Rate",
@@ -358,7 +358,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_EVENTRAINMM: (
         "Event Rain Rate",
@@ -367,7 +367,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_HOURLYRAINMM: (
         "Hourly Rain Rate",
@@ -376,7 +376,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_TOTALRAINMM: (
         "Total Rain Rate",
@@ -385,7 +385,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_DAILYRAINMM: (
         "Daily Rain Rate",
@@ -394,7 +394,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_WEEKLYRAINMM: (
         "Weekly Rain Rate",
@@ -403,7 +403,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_MONTHLYRAINMM: (
         "Monthly Rain Rate",
@@ -412,7 +412,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_YEARLYRAINMM: (
         "Yearly Rain Rate",
@@ -421,7 +421,7 @@ SENSOR_TYPES = {
         None,
         "mdi:water",
         S_METRIC,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_HUMIDITY: (
         "Humidity",
@@ -513,7 +513,15 @@ SENSOR_TYPES = {
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_WINDDIR: ("Wind Direction", DEGREE, TYPE_SENSOR, None, "mdi:compass", 0, None),
+    TYPE_WINDDIR: (
+        "Wind Direction",
+        DEGREE,
+        TYPE_SENSOR,
+        None,
+        "mdi:compass",
+        0,
+        STATE_CLASS_MEASUREMENT,
+    ),
     TYPE_WINDDIR_A10: (
         "Wind Direction 10m Avg",
         DEGREE,
@@ -521,7 +529,7 @@ SENSOR_TYPES = {
         None,
         "mdi:compass",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDSPEEDKMH: (
         "Wind Speed",
@@ -530,7 +538,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDSPEEDKMH_A10: (
         "Wind Speed 10m Avg",
@@ -539,7 +547,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDGUSTKMH: (
         "Wind Gust",
@@ -548,7 +556,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDSPEEDMPH: (
         "Wind Speed",
@@ -557,7 +565,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDSPEEDMPH_A10: (
         "Wind Speed 10m Avg",
@@ -566,7 +574,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDGUSTMPH: (
         "Wind Gust",
@@ -575,7 +583,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_MAXDAILYGUST: (
         "Max Daily Wind Gust",
@@ -584,7 +592,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_MAXDAILYGUSTKMH: (
         "Max Daily Wind Gust",
@@ -593,7 +601,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDGUSTMS: (
         "Wind Gust",
@@ -602,7 +610,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC_MS,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDSPEEDMS: (
         "Wind Speed",
@@ -611,7 +619,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC_MS,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDSPEEDMS_A10: (
         "Wind Speed",
@@ -620,7 +628,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC_MS,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_MAXDAILYGUSTMS: (
         "Max Daily Wind Gust",
@@ -629,7 +637,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-windy",
         S_METRIC_MS,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_TEMPC: (
         "Outdoor Temperature",
@@ -728,7 +736,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINTINC: (
         "Indoor Dewpoint",
@@ -737,7 +745,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT1C: (
         "Dewpoint 1",
@@ -746,7 +754,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT2C: (
         "Dewpoint 2",
@@ -755,7 +763,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT3C: (
         "Dewpoint 3",
@@ -764,7 +772,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT4C: (
         "Dewpoint 4",
@@ -773,7 +781,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT5C: (
         "Dewpoint 5",
@@ -782,7 +790,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT6C: (
         "Dewpoint 6",
@@ -791,7 +799,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT7C: (
         "Dewpoint 7",
@@ -800,7 +808,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_DEWPOINT8C: (
         "Dewpoint 8",
@@ -809,7 +817,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WINDCHILLC: (
         "Windchill",
@@ -818,7 +826,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOLARRADIATION: (
         "Solar Radiation",
@@ -827,9 +835,17 @@ SENSOR_TYPES = {
         DEVICE_CLASS_ILLUMINANCE,
         "mdi:weather-sunny",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_UV: ("UV Index", UV_INDEX, TYPE_SENSOR, None, "mdi:sunglasses", 0, None),
+    TYPE_UV: (
+        "UV Index",
+        UV_INDEX,
+        TYPE_SENSOR,
+        None,
+        "mdi:sunglasses",
+        0,
+        STATE_CLASS_MEASUREMENT,
+    ),
     TYPE_SOILMOISTURE1: (
         "Soil Moisture 1",
         PERCENTAGE,
@@ -837,7 +853,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE2: (
         "Soil Moisture 2",
@@ -846,7 +862,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE3: (
         "Soil Moisture 3",
@@ -855,7 +871,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE4: (
         "Soil Moisture 4",
@@ -864,7 +880,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE5: (
         "Soil Moisture 5",
@@ -873,7 +889,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE6: (
         "Soil Moisture 6",
@@ -882,7 +898,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE7: (
         "Soil Moisture 7",
@@ -891,7 +907,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILMOISTURE8: (
         "Soil Moisture 8",
@@ -900,7 +916,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_CH1: (
         "PM2.5 1",
@@ -909,7 +925,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_CH2: (
         "PM2.5 2",
@@ -918,7 +934,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_CH3: (
         "PM2.5 3",
@@ -927,7 +943,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_CH4: (
         "PM2.5 4",
@@ -936,7 +952,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_AVG_24H_CH1: (
         "PM2.5 24h average 1",
@@ -945,7 +961,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_AVG_24H_CH2: (
         "PM2.5 24h average 2",
@@ -954,7 +970,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_AVG_24H_CH3: (
         "PM2.5 24h average 3",
@@ -963,7 +979,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25_AVG_24H_CH4: (
         "PM2.5 24h average 4",
@@ -972,7 +988,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LIGHTNING_TIME: (
         "Last Lightning strike",
@@ -981,7 +997,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_TIMESTAMP,
         "mdi:clock",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LIGHTNING_NUM: (
         "Lightning strikes",
@@ -990,7 +1006,7 @@ SENSOR_TYPES = {
         None,
         "mdi:weather-lightning",
         0,
-        None,
+        STATE_CLASS_TOTAL_INCREASING,
     ),
     TYPE_LIGHTNING_KM: (
         "Lightning strike distance",
@@ -999,7 +1015,7 @@ SENSOR_TYPES = {
         None,
         "mdi:ruler",
         S_METRIC,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LIGHTNING_MI: (
         "Lightning strike distance",
@@ -1008,7 +1024,7 @@ SENSOR_TYPES = {
         None,
         "mdi:ruler",
         S_IMPERIAL,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAK_CH1: (
         "Leak Detection 1",
@@ -1053,7 +1069,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_PM25_AVG_24H: (
         "WH45 PM2.5 24h average",
@@ -1062,7 +1078,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_PM10: (
         "WH45 PM10",
@@ -1071,7 +1087,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_PM10_AVG_24H: (
         "WH45 PM10 24h average",
@@ -1080,7 +1096,7 @@ SENSOR_TYPES = {
         None,
         "mdi:eye",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_HUMIDITY: (
         "WH45 Humidity",
@@ -1089,7 +1105,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_HUMIDITY,
         "mdi:water-percent",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_TEMPC: (
         "WH45 Temperature",
@@ -1107,7 +1123,7 @@ SENSOR_TYPES = {
         None,
         "mdi:molecule-co2",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_CO2_AVG_24H: (
         "WH45 CO2 24h average",
@@ -1116,7 +1132,7 @@ SENSOR_TYPES = {
         None,
         "mdi:molecule-co2",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_CO2_BATT: (
         "WH45 Battery",
@@ -1125,7 +1141,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WH25BATT: (
         "WH25 Battery",
@@ -1152,7 +1168,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WH57BATT: (
         "WH57 Battery",
@@ -1161,7 +1177,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WH65BATT: (
         "WH65 Battery",
@@ -1179,7 +1195,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_WH80BATT: (
         "WH80 Battery",
@@ -1188,7 +1204,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT1: (
         "Soil Moisture 1 Battery",
@@ -1197,7 +1213,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT2: (
         "Soil Moisture 2 Battery",
@@ -1206,7 +1222,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT3: (
         "Soil Moisture 3 Battery",
@@ -1215,7 +1231,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT4: (
         "Soil Moisture 4 Battery",
@@ -1224,7 +1240,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT5: (
         "Soil Moisture 5 Battery",
@@ -1233,7 +1249,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT6: (
         "Soil Moisture 6 Battery",
@@ -1242,7 +1258,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT7: (
         "Soil Moisture 7 Battery",
@@ -1251,7 +1267,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_SOILBATT8: (
         "Soil Moisture 8 Battery",
@@ -1260,7 +1276,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_BATTERY1: (
         "Battery 1",
@@ -1341,7 +1357,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT2: (
         "PM2.5 2 Battery",
@@ -1350,7 +1366,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT3: (
         "PM2.5 3 Battery",
@@ -1359,7 +1375,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT4: (
         "PM2.5 4 Battery",
@@ -1368,7 +1384,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT5: (
         "PM2.5 5 Battery",
@@ -1377,7 +1393,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT6: (
         "PM2.5 6 Battery",
@@ -1386,7 +1402,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT7: (
         "PM2.5 7 Battery",
@@ -1395,7 +1411,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_PM25BATT8: (
         "PM2.5 8 Battery",
@@ -1404,7 +1420,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT1: (
         "Leak 1 Battery",
@@ -1413,7 +1429,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT2: (
         "Leak 2 Battery",
@@ -1422,7 +1438,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT3: (
         "Leak 3 Battery",
@@ -1431,7 +1447,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT4: (
         "Leak 4 Battery",
@@ -1440,7 +1456,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT5: (
         "Leak 5 Battery",
@@ -1449,7 +1465,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT6: (
         "Leak 6 Battery",
@@ -1458,7 +1474,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT7: (
         "Leak 7 Battery",
@@ -1467,7 +1483,7 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
     TYPE_LEAKBATT8: (
         "Leak 8 Battery",
@@ -1476,151 +1492,151 @@ SENSOR_TYPES = {
         DEVICE_CLASS_BATTERY,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH1: (
+    TYPE_WN34TEMP1C: (
         "Soil Temperature 1",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH2: (
+    TYPE_WN34TEMP2C: (
         "Soil Temperature 2",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH3: (
+    TYPE_WN34TEMP3C: (
         "Soil Temperature 3",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH4: (
+    TYPE_WN34TEMP4C: (
         "Soil Temperature 4",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH5: (
+    TYPE_WN34TEMP5C: (
         "Soil Temperature 5",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH6: (
+    TYPE_WN34TEMP6C: (
         "Soil Temperature 6",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH7: (
+    TYPE_WN34TEMP7C: (
         "Soil Temperature 7",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_CH8: (
+    TYPE_WN34TEMP8C: (
         "Soil Temperature 8",
-        TEMP_FAHRENHEIT,
+        TEMP_CELSIUS,
         TYPE_SENSOR,
         DEVICE_CLASS_TEMPERATURE,
         "mdi:thermometer",
         0,
         STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT1: (
+    TYPE_WN34BATT1: (
         "Soil Temperature 1 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT2: (
+    TYPE_WN34BATT2: (
         "Soil Temperature 2 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT3: (
+    TYPE_WN34BATT3: (
         "Soil Temperature 3 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT4: (
+    TYPE_WN34BATT4: (
         "Soil Temperature 4 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT5: (
+    TYPE_WN34BATT5: (
         "Soil Temperature 5 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT6: (
+    TYPE_WN34BATT6: (
         "Soil Temperature 6 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT7: (
+    TYPE_WN34BATT7: (
         "Soil Temperature 7 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
-    TYPE_TF_BATT8: (
+    TYPE_WN34BATT8: (
         "Soil Temperature 8 Battery",
         ELECTRIC_POTENTIAL_VOLT,
         TYPE_SENSOR,
         DEVICE_CLASS_VOLTAGE,
         "mdi:battery",
         0,
-        None,
+        STATE_CLASS_MEASUREMENT,
     ),
 }
 
@@ -1636,6 +1652,14 @@ IGNORED_SENSORS = [
     "temp7f",
     "temp8f",
     "tf_co2",
+    "tf_ch1",
+    "tf_ch2",
+    "tf_ch3",
+    "tf_ch4",
+    "tf_ch5",
+    "tf_ch6",
+    "tf_ch7",
+    "tf_ch8",
     "dateutc",
     "windchillf",
     "dewpointf",
@@ -1648,6 +1672,8 @@ IGNORED_SENSORS = [
     "dewpoint6f",
     "dewpoint7f",
     "dewpoint8f",
+    "mac",
+    "fields",
     DATA_PASSKEY,
     DATA_STATIONTYPE,
     DATA_FREQ,

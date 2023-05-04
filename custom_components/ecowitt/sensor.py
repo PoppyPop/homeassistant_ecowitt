@@ -39,6 +39,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class EcowittSensor(EcowittEntity, SensorEntity):
+    """Definition of a sensor."""
+
     def __init__(self, hass, entry, key, name, dc, uom, icon, sc):
         """Initialize the sensor."""
         super().__init__(hass, entry, key, name)
@@ -84,5 +86,5 @@ class EcowittSensor(EcowittEntity, SensorEntity):
 
     @property
     def state_class(self):
-        """Return the state_class of the device."""
+        """Return sensor state class."""
         return self._sc

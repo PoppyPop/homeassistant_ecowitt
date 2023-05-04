@@ -76,6 +76,7 @@ class EcowittConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
+        """Options flow."""
         return EcowittOptionsFlowHandler(config_entry)
 
 
