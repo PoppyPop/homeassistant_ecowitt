@@ -1,5 +1,5 @@
 {
-  "domain": "ecowitt",
+  "domain": "integration_ecowitt",
   "name": "Ecowitt Weather Station",
   "codeowners": ["@garbled1", "@PoppyPop"],
   "config_flow": true,
@@ -7,5 +7,5 @@
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/PoppyPop/homeassistant_ecowitt/issues",
   "requirements": ["pyecowitt==0.14"],
-  "version": "0.2.0"
+  "version": "0.2.1"
 }
