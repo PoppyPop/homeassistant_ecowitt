@@ -6,8 +6,6 @@ import time
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.config_entries import SOURCE_IMPORT
 from homeassistant.const import CONF_PORT
-from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
-from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
 from homeassistant.core import callback
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -16,6 +14,8 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_registry import (
     async_get as async_get_entity_registry,
 )
+from homeassistant.util.unit_system import METRIC_SYSTEM
+from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 from pyecowitt import EcoWittListener
 from pyecowitt import WINDCHILL_HYBRID
 from pyecowitt import WINDCHILL_NEW
@@ -172,34 +172,36 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             return True
         if "baro" in sensor:
             if (
-                entry.options[CONF_UNIT_BARO] == CONF_UNIT_SYSTEM_IMPERIAL
+                entry.options[CONF_UNIT_BARO] == US_CUSTOMARY_SYSTEM.pressure_unit
                 and metric == S_METRIC
             ):
                 return False
             if (
-                entry.options[CONF_UNIT_BARO] == CONF_UNIT_SYSTEM_METRIC
+                entry.options[CONF_UNIT_BARO] == METRIC_SYSTEM.pressure_unit
                 and metric == S_IMPERIAL
             ):
                 return False
         if "rain" in sensor:
             if (
-                entry.options[CONF_UNIT_RAIN] == CONF_UNIT_SYSTEM_IMPERIAL
+                entry.options[CONF_UNIT_RAIN]
+                == US_CUSTOMARY_SYSTEM.accumulated_precipitation_unit
                 and metric == S_METRIC
             ):
                 return False
             if (
-                entry.options[CONF_UNIT_RAIN] == CONF_UNIT_SYSTEM_METRIC
+                entry.options[CONF_UNIT_RAIN]
+                == METRIC_SYSTEM.accumulated_precipitation_unit
                 and metric == S_IMPERIAL
             ):
                 return False
         if "windchill" not in sensor and ("wind" in sensor or "gust" in sensor):
             if (
-                entry.options[CONF_UNIT_WIND] == CONF_UNIT_SYSTEM_IMPERIAL
+                entry.options[CONF_UNIT_WIND] == US_CUSTOMARY_SYSTEM.wind_speed_unit
                 and metric != S_IMPERIAL
             ):
                 return False
             if (
-                entry.options[CONF_UNIT_WIND] == CONF_UNIT_SYSTEM_METRIC
+                entry.options[CONF_UNIT_WIND] == METRIC_SYSTEM.wind_speed_unit
                 and metric != S_METRIC
             ):
                 return False
@@ -210,12 +212,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 return False
         if (
             sensor == "lightning"
-            and entry.options[CONF_UNIT_LIGHTNING] == CONF_UNIT_SYSTEM_IMPERIAL
+            and entry.options[CONF_UNIT_LIGHTNING] == METRIC_SYSTEM.length_unit
         ):
             return False
         if (
             sensor == "lightning_mi"
-            and entry.options[CONF_UNIT_LIGHTNING] == CONF_UNIT_SYSTEM_METRIC
+            and entry.options[CONF_UNIT_LIGHTNING] == US_CUSTOMARY_SYSTEM.length_unit
         ):
             return False
         return True
@@ -375,6 +377,7 @@ async def async_remove_ecowitt_entities(entities, hass, ecowitt_data):
 def async_add_ecowitt_entities(
     hass, entry, entity_type, platform, async_add_entities, discovery_info
 ):
+    """Add an ecowitt entities."""
     entities = []
     if discovery_info is None:
         return
@@ -383,9 +386,17 @@ def async_add_ecowitt_entities(
         if new_entity not in hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform]:
             hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform].append(new_entity)
         name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[new_entity]
-        entities.append(
-            entity_type(hass, entry, new_entity, name, device_class, uom, icon, sc)
+
+        new_hass_entity = entity_type(
+            hass, entry, new_entity, name, device_class, uom, icon, sc
         )
+
+        async_dispatcher_connect(
+            hass, SIGNAL_REMOVE_ENTITIES, new_hass_entity.remove_entity
+        )
+
+        entities.append(new_hass_entity)
+
     if entities:
         async_add_entities(entities, True)
 
@@ -401,8 +412,6 @@ class EcowittEntity(Entity):
         self._stationinfo = hass.data[DOMAIN][entry.entry_id][DATA_STATION]
         self._ws = hass.data[DOMAIN][entry.entry_id][DATA_ECOWITT]
         self._entry = entry
-
-        _LOGGER.debug(f"{name} => {self._stationinfo[DATA_PASSKEY]}-{self._key}")
 
     @property
     def should_poll(self):
@@ -441,7 +450,7 @@ class EcowittEntity(Entity):
         }
 
     async def async_added_to_hass(self):
-        """Setup a listener for the entity."""
+        """Add an listener."""
         async_dispatcher_connect(self.hass, DOMAIN, self._update_callback)
 
     @callback
