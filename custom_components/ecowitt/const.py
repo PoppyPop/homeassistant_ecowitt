@@ -1673,8 +1673,6 @@ IGNORED_SENSORS = [
     "dewpoint8f",
     "mac",
     "fields",
-    "baromabsin",
-    "baromrelin",
     DATA_PASSKEY,
     DATA_STATIONTYPE,
     DATA_FREQ,

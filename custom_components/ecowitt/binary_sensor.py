@@ -21,8 +21,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     """Add sensors if new."""
 
-    def add_entities(discovery_info=None):
-        async_add_ecowitt_entities(
+    async def add_entities(discovery_info=None):
+        await async_add_ecowitt_entities(
             hass,
             entry,
             EcowittBinarySensor,
@@ -33,7 +33,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     signal = f"{SIGNAL_ADD_ENTITIES}_{BINARY_SENSOR_DOMAIN}"
     async_dispatcher_connect(hass, signal, add_entities)
-    add_entities(hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][TYPE_BINARY_SENSOR])
+    await add_entities(
+        hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][TYPE_BINARY_SENSOR]
+    )
 
 
 class EcowittBinarySensor(EcowittEntity, BinarySensorEntity):

@@ -11,9 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.entity_registry import (
-    async_get as async_get_entity_registry,
-)
+from homeassistant.helpers.entity_registry import async_get
 from homeassistant.util.unit_system import METRIC_SYSTEM
 from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 from pyecowitt import EcoWittListener
@@ -148,26 +146,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     stationinfo[DATA_MODEL] = "Unknown"
 
     # setup the base connection
-    ws = EcoWittListener(port=entry.data[CONF_PORT])
-    ecowitt_data[DATA_ECOWITT] = ws
+    web_server = EcoWittListener(port=entry.data[CONF_PORT])
+    ecowitt_data[DATA_ECOWITT] = web_server
 
     if entry.options[CONF_UNIT_WINDCHILL] == W_TYPE_OLD:
-        ws.set_windchill(WINDCHILL_OLD)
+        web_server.set_windchill(WINDCHILL_OLD)
     if entry.options[CONF_UNIT_WINDCHILL] == W_TYPE_NEW:
-        ws.set_windchill(WINDCHILL_NEW)
+        web_server.set_windchill(WINDCHILL_NEW)
     if entry.options[CONF_UNIT_WINDCHILL] == W_TYPE_HYBRID:
-        ws.set_windchill(WINDCHILL_HYBRID)
+        web_server.set_windchill(WINDCHILL_HYBRID)
 
-    hass.loop.create_task(ws.listen())
+    hass.loop.create_task(web_server.listen())
 
     async def close_server(*args):
         """Close the ecowitt server."""
-        await ws.stop()
+        await web_server.stop()
 
     def check_imp_metric_sensor(sensor):
         """Check if this is the wrong sensor for our config (imp/metric)."""
         # Is this a metric or imperial sensor, lookup and skip
-        name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[sensor]
+        _, _, _, _, _, metric, _ = SENSOR_TYPES[sensor]
         if metric == 0:
             return True
         if "baro" in sensor:
@@ -233,31 +231,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         if not check_imp_metric_sensor(sensor):
             return None
 
-        name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[sensor]
+        _, _, kind, _, _, _, _ = SENSOR_TYPES[sensor]
         ecowitt_data[REG_ENTITIES][kind].append(sensor)
         return kind
 
-    async def _first_data_rec(weather_data):
+    async def _first_data_rec():
         _LOGGER.info("First ecowitt data recd, setting up sensors.")
         # check if we have model info, etc.
-        if DATA_PASSKEY in ws.last_values:
-            stationinfo[DATA_PASSKEY] = ws.last_values[DATA_PASSKEY]
-            ws.last_values.pop(DATA_PASSKEY, None)
+        if DATA_PASSKEY in web_server.last_values:
+            stationinfo[DATA_PASSKEY] = web_server.last_values[DATA_PASSKEY]
+            web_server.last_values.pop(DATA_PASSKEY, None)
         else:
             _LOGGER.error("No passkey, cannot set unique id.")
             return False
-        if DATA_STATIONTYPE in ws.last_values:
-            stationinfo[DATA_STATIONTYPE] = ws.last_values[DATA_STATIONTYPE]
-            ws.last_values.pop(DATA_STATIONTYPE, None)
-        if DATA_FREQ in ws.last_values:
-            stationinfo[DATA_FREQ] = ws.last_values[DATA_FREQ]
-            ws.last_values.pop(DATA_FREQ, None)
-        if DATA_MODEL in ws.last_values:
-            stationinfo[DATA_MODEL] = ws.last_values[DATA_MODEL]
-            ws.last_values.pop(DATA_MODEL, None)
+        if DATA_STATIONTYPE in web_server.last_values:
+            stationinfo[DATA_STATIONTYPE] = web_server.last_values[DATA_STATIONTYPE]
+            web_server.last_values.pop(DATA_STATIONTYPE, None)
+        if DATA_FREQ in web_server.last_values:
+            stationinfo[DATA_FREQ] = web_server.last_values[DATA_FREQ]
+            web_server.last_values.pop(DATA_FREQ, None)
+        if DATA_MODEL in web_server.last_values:
+            stationinfo[DATA_MODEL] = web_server.last_values[DATA_MODEL]
+            web_server.last_values.pop(DATA_MODEL, None)
 
         # load the sensors we have
-        for sensor in ws.last_values.keys():
+        for sensor in web_server.last_values:
             check_and_append_sensor(sensor)
 
         if (
@@ -284,9 +282,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             new_sensors[component] = []
 
         if not hass.data[DOMAIN][entry.entry_id][DATA_READY]:
-            await _first_data_rec(weather_data)
+            await _first_data_rec()
             return
-        for sensor in weather_data.keys():
+        for sensor in weather_data:
             if sensor not in SENSOR_TYPES:
                 if sensor not in IGNORED_SENSORS:
                     _LOGGER.warning(
@@ -333,15 +331,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         async_dispatcher_send(hass, DOMAIN)
 
     # this is part of the base async_setup_entry
-    ws.register_listener(_async_ecowitt_update_cb)
+    web_server.register_listener(_async_ecowitt_update_cb)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
 
-    ws = hass.data[DOMAIN][entry.entry_id][DATA_ECOWITT]
-    await ws.stop()
+    web_server = hass.data[DOMAIN][entry.entry_id][DATA_ECOWITT]
+    await web_server.stop()
 
     unload_ok = all(
         await asyncio.gather(
@@ -363,7 +361,7 @@ async def async_remove_ecowitt_entities(entities, hass, ecowitt_data):
     try:
         eventData = {}
         for entity in entities:
-            name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[entity]
+            _, _, kind, _, _, _, _ = SENSOR_TYPES[entity]
 
             eventData[entity] = kind
             ecowitt_data[REG_ENTITIES][kind].remove(entity)
@@ -374,7 +372,7 @@ async def async_remove_ecowitt_entities(entities, hass, ecowitt_data):
         _LOGGER.error(e)
 
 
-def async_add_ecowitt_entities(
+async def async_add_ecowitt_entities(
     hass, entry, entity_type, platform, async_add_entities, discovery_info
 ):
     """Add an ecowitt entities."""
@@ -385,10 +383,10 @@ def async_add_ecowitt_entities(
     for new_entity in discovery_info:
         if new_entity not in hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform]:
             hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][platform].append(new_entity)
-        name, uom, kind, device_class, icon, metric, sc = SENSOR_TYPES[new_entity]
+        name, uom, _, device_class, icon, _, state_class = SENSOR_TYPES[new_entity]
 
         new_hass_entity = entity_type(
-            hass, entry, new_entity, name, device_class, uom, icon, sc
+            hass, entry, new_entity, name, device_class, uom, icon, state_class
         )
 
         async_dispatcher_connect(
@@ -457,8 +455,8 @@ class EcowittEntity(Entity):
     async def remove_entity(self, discovery_info=None):
         """Remove an entity."""
 
-        if self._key in discovery_info.keys():
-            registry = await async_get_entity_registry(self.hass)
+        if self._key in discovery_info:
+            registry = async_get(self.hass)
 
             entity_id = registry.async_get_entity_id(
                 discovery_info[self._key], DOMAIN, self.unique_id
