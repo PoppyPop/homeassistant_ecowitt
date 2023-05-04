@@ -14,9 +14,11 @@ from .const import CONF_UNIT_RAIN
 from .const import CONF_UNIT_WIND
 from .const import CONF_UNIT_WINDCHILL
 from .const import DOMAIN
-from .const import UNIT_OPTS
+from .const import UNIT_BARO_OPTS
+from .const import UNIT_LENGTH_OPTS
+from .const import UNIT_PRECI_OPTS
+from .const import UNIT_WIND_OPTS
 from .const import W_TYPE_HYBRID
-from .const import WIND_OPTS
 from .const import WINDCHILL_OPTS
 from .schemas import (
     DATA_SCHEMA,
@@ -102,30 +104,30 @@ class EcowittOptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_UNIT_BARO,
                     default=self.config_entry.options.get(
                         CONF_UNIT_BARO,
-                        self.hass.config.units.name,
+                        self.hass.config.units.pressure_unit,
                     ),
-                ): vol.In(UNIT_OPTS),
+                ): vol.In(UNIT_BARO_OPTS),
                 vol.Optional(
                     CONF_UNIT_WIND,
                     default=self.config_entry.options.get(
                         CONF_UNIT_WIND,
-                        self.hass.config.units.name,
+                        self.hass.config.units.wind_speed_unit,
                     ),
-                ): vol.In(WIND_OPTS),
+                ): vol.In(UNIT_WIND_OPTS),
                 vol.Optional(
                     CONF_UNIT_RAIN,
                     default=self.config_entry.options.get(
                         CONF_UNIT_RAIN,
-                        self.hass.config.units.name,
+                        self.hass.config.units.accumulated_precipitation_unit,
                     ),
-                ): vol.In(UNIT_OPTS),
+                ): vol.In(UNIT_PRECI_OPTS),
                 vol.Optional(
                     CONF_UNIT_LIGHTNING,
                     default=self.config_entry.options.get(
                         CONF_UNIT_LIGHTNING,
-                        self.hass.config.units.name,
+                        self.hass.config.units.length_unit,
                     ),
-                ): vol.In(UNIT_OPTS),
+                ): vol.In(UNIT_LENGTH_OPTS),
                 vol.Optional(
                     CONF_UNIT_WINDCHILL,
                     default=self.config_entry.options.get(

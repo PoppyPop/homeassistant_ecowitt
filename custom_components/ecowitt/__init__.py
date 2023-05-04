@@ -69,13 +69,15 @@ async def async_setup(hass: HomeAssistant, config: dict):
         }
         # set defaults if not set in conf
         if CONF_UNIT_BARO not in config[DOMAIN]:
-            config[DOMAIN][CONF_UNIT_BARO] = hass.config.units.name
+            config[DOMAIN][CONF_UNIT_BARO] = hass.config.units.pressure_unit
         if CONF_UNIT_WIND not in config[DOMAIN]:
-            config[DOMAIN][CONF_UNIT_WIND] = hass.config.units.name
+            config[DOMAIN][CONF_UNIT_WIND] = hass.config.units.wind_speed_unit
         if CONF_UNIT_RAIN not in config[DOMAIN]:
-            config[DOMAIN][CONF_UNIT_RAIN] = hass.config.units.name
+            config[DOMAIN][
+                CONF_UNIT_RAIN
+            ] = hass.config.units.accumulated_precipitation_unit
         if CONF_UNIT_LIGHTNING not in config[DOMAIN]:
-            config[DOMAIN][CONF_UNIT_LIGHTNING] = hass.config.units.name
+            config[DOMAIN][CONF_UNIT_LIGHTNING] = hass.config.units.length_unit
         if CONF_UNIT_WINDCHILL not in config[DOMAIN]:
             config[DOMAIN][CONF_UNIT_WINDCHILL] = W_TYPE_HYBRID
         # set the options for migration
@@ -132,10 +134,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     if not entry.options:
         entry.options = {
-            CONF_UNIT_BARO: hass.config.units.name,
-            CONF_UNIT_WIND: hass.config.units.name,
-            CONF_UNIT_RAIN: hass.config.units.name,
-            CONF_UNIT_LIGHTNING: hass.config.units.name,
+            CONF_UNIT_BARO: hass.config.units.pressure_unit,
+            CONF_UNIT_WIND: hass.config.units.wind_speed_unit,
+            CONF_UNIT_RAIN: hass.config.units.accumulated_precipitation_unit,
+            CONF_UNIT_LIGHTNING: hass.config.units.length_unit,
             CONF_UNIT_WINDCHILL: W_TYPE_HYBRID,
         }
 
@@ -399,6 +401,8 @@ class EcowittEntity(Entity):
         self._stationinfo = hass.data[DOMAIN][entry.entry_id][DATA_STATION]
         self._ws = hass.data[DOMAIN][entry.entry_id][DATA_ECOWITT]
         self._entry = entry
+
+        _LOGGER.debug(f"{name} => {self._stationinfo[DATA_PASSKEY]}-{self._key}")
 
     @property
     def should_poll(self):
