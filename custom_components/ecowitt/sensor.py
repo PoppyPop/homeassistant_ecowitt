@@ -3,9 +3,8 @@ import logging
 
 import homeassistant.util.dt as dt_util
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import DEVICE_CLASS_BATTERY
-from homeassistant.const import DEVICE_CLASS_TIMESTAMP
 from homeassistant.const import PERCENTAGE
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -23,8 +22,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, entry, async_add_entities):
     """Add sensors if new."""
 
-    def add_entities(discovery_info=None):
-        async_add_ecowitt_entities(
+    async def add_entities(discovery_info=None):
+        await async_add_ecowitt_entities(
             hass,
             entry,
             EcowittSensor,
@@ -35,10 +34,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     signal = f"{SIGNAL_ADD_ENTITIES}_{SENSOR_DOMAIN}"
     async_dispatcher_connect(hass, signal, add_entities)
-    add_entities(hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][TYPE_SENSOR])
+    await add_entities(hass.data[DOMAIN][entry.entry_id][REG_ENTITIES][TYPE_SENSOR])
 
 
 class EcowittSensor(EcowittEntity, SensorEntity):
+    """Definition of a sensor."""
+
     def __init__(self, hass, entry, key, name, dc, uom, icon, sc):
         """Initialize the sensor."""
         super().__init__(hass, entry, key, name)
@@ -52,14 +53,14 @@ class EcowittSensor(EcowittEntity, SensorEntity):
         """Return the state of the sensor."""
         if self._key in self._ws.last_values:
             # The lightning time is reported in UTC, hooray.
-            if self._dc == DEVICE_CLASS_TIMESTAMP:
+            if self._dc == SensorDeviceClass.TIMESTAMP:
                 if not isinstance(self._ws.last_values[self._key], int):
                     return STATE_UNKNOWN
                 return dt_util.as_local(
                     dt_util.utc_from_timestamp(self._ws.last_values[self._key])
                 ).isoformat()
             # Battery value is 0-5
-            if self._dc == DEVICE_CLASS_BATTERY and self._uom == PERCENTAGE:
+            if self._dc == SensorDeviceClass.BATTERY and self._uom == PERCENTAGE:
                 return self._ws.last_values[self._key] * 20.0
             return self._ws.last_values[self._key]
         _LOGGER.warning(
@@ -84,5 +85,5 @@ class EcowittSensor(EcowittEntity, SensorEntity):
 
     @property
     def state_class(self):
-        """Return the state_class of the device."""
+        """Return sensor state class."""
         return self._sc
