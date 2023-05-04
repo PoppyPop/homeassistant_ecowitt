@@ -4,7 +4,7 @@
   "version": "0.2.0",
   "config_flow": true,
   "documentation": "https://github.com/PoppyPop/homeassistant_ecowitt",
-  "issue_tracker": "hhttps://github.com/PoppyPop/homeassistant_ecowitt/issues",
+  "issue_tracker": "https://github.com/PoppyPop/homeassistant_ecowitt/issues",
   "requirements": ["pyecowitt==0.14"],
   "ssdp": [],
   "zeroconf": [],

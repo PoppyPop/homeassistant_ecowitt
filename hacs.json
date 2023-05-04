@@ -1,7 +1,6 @@
 {
   "name": "Ecowitt Weather Station",
   "render_readme": true,
-  "domains": ["sensor", "binary_sensor"],
   "iot_class": "Local Push",
   "hacs": "1.6.0",
   "homeassistant": "2023.5.0"
