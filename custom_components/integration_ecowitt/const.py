@@ -30,7 +30,7 @@ ECOWITT_PLATFORMS = ["sensor", "binary_sensor"]
 
 TYPE_SENSOR = "sensor"
 TYPE_BINARY_SENSOR = "binary_sensor"
-DOMAIN = "ecowitt"
+DOMAIN = "integration_ecowitt"
 DATA_CONFIG = "config"
 DATA_OPTIONS = "options"
 DATA_ECOWITT = "ecowitt_listener"
