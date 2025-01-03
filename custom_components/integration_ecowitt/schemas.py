@@ -1,4 +1,5 @@
 """Schema definitions."""
+
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.const import CONF_PORT

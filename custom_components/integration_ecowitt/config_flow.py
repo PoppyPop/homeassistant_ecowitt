@@ -1,4 +1,5 @@
 """Config flow for ecowitt."""
+
 import logging
 
 import voluptuous as vol

@@ -1,4 +1,5 @@
 """The Ecowitt Weather Station Component."""
+
 import asyncio
 import logging
 import time
@@ -71,9 +72,9 @@ async def async_setup(hass: HomeAssistant, config: dict):
         if CONF_UNIT_WIND not in config[DOMAIN]:
             config[DOMAIN][CONF_UNIT_WIND] = hass.config.units.wind_speed_unit
         if CONF_UNIT_RAIN not in config[DOMAIN]:
-            config[DOMAIN][
-                CONF_UNIT_RAIN
-            ] = hass.config.units.accumulated_precipitation_unit
+            config[DOMAIN][CONF_UNIT_RAIN] = (
+                hass.config.units.accumulated_precipitation_unit
+            )
         if CONF_UNIT_LIGHTNING not in config[DOMAIN]:
             config[DOMAIN][CONF_UNIT_LIGHTNING] = hass.config.units.length_unit
         if CONF_UNIT_WINDCHILL not in config[DOMAIN]:
@@ -101,6 +102,10 @@ async def async_setup(hass: HomeAssistant, config: dict):
             )
         )
     return True
+
+
+async def async_update_entry(hass: HomeAssistant, entry: ConfigEntry):
+    """Set up the Ecowitt component from UI."""
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
@@ -131,13 +136,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         ecowitt_data[REG_ENTITIES][pl] = []
 
     if not entry.options:
-        entry.options = {
-            CONF_UNIT_BARO: hass.config.units.pressure_unit,
-            CONF_UNIT_WIND: hass.config.units.wind_speed_unit,
-            CONF_UNIT_RAIN: hass.config.units.accumulated_precipitation_unit,
-            CONF_UNIT_LIGHTNING: hass.config.units.length_unit,
-            CONF_UNIT_WINDCHILL: W_TYPE_HYBRID,
-        }
+        hass.config_entries.async_update_entry(
+            entry=entry,
+            options={
+                CONF_UNIT_BARO: hass.config.units.pressure_unit,
+                CONF_UNIT_WIND: hass.config.units.wind_speed_unit,
+                CONF_UNIT_RAIN: hass.config.units.accumulated_precipitation_unit,
+                CONF_UNIT_LIGHTNING: hass.config.units.length_unit,
+                CONF_UNIT_WINDCHILL: W_TYPE_HYBRID,
+            },
+        )
 
     # preload some model info
     stationinfo = ecowitt_data[DATA_STATION]
@@ -265,10 +273,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _LOGGER.error("No sensors found to monitor, check device config.")
             return False
 
-        for component in ECOWITT_PLATFORMS:
-            hass.async_create_task(
-                hass.config_entries.async_forward_entry_setup(entry, component)
-            )
+        # for component in ECOWITT_PLATFORMS:
+        #     hass.async_create_task(
+        #         await hass.config_entries.async_forward_entry_setups(entry, component)
+        #     )
+        await hass.config_entries.async_forward_entry_setups(entry, ECOWITT_PLATFORMS)
 
         ecowitt_data[DATA_READY] = True
 
@@ -443,7 +452,7 @@ class EcowittEntity(Entity):
             "manufacturer": DOMAIN,
             "model": self._stationinfo[DATA_MODEL],
             "sw_version": self._stationinfo[DATA_STATIONTYPE],
-            "via_device": (DOMAIN, self._stationinfo[DATA_STATIONTYPE]),
+            # "via_device": (DOMAIN, self._stationinfo[DATA_STATIONTYPE]),
             # "frequency": self._stationinfo[DATA_FREQ],
         }
 

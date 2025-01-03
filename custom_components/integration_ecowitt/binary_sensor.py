@@ -1,4 +1,5 @@
 """Support for Ecowitt Weather Stations."""
+
 import logging
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
