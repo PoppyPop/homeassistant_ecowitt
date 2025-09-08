@@ -1664,6 +1664,7 @@ IGNORED_SENSORS = [
     "dewpoint8f",
     "mac",
     "fields",
+    "runtime",
     DATA_PASSKEY,
     DATA_STATIONTYPE,
     DATA_FREQ,
