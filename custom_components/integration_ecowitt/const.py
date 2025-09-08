@@ -1665,6 +1665,7 @@ IGNORED_SENSORS = [
     "mac",
     "fields",
     "runtime",
+    "vpd",
     DATA_PASSKEY,
     DATA_STATIONTYPE,
     DATA_FREQ,
