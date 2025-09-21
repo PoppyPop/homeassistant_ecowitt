@@ -201,6 +201,7 @@ TYPE_WN34BATT5 = "tf_batt5"
 TYPE_WN34BATT6 = "tf_batt6"
 TYPE_WN34BATT7 = "tf_batt7"
 TYPE_WN34BATT8 = "tf_batt8"
+TYPE_VPD = "vpd"
 
 S_METRIC = 1
 S_IMPERIAL = 2
@@ -1626,6 +1627,15 @@ SENSOR_TYPES = {
         SensorDeviceClass.VOLTAGE,
         "mdi:battery",
         0,
+        SensorStateClass.MEASUREMENT,
+    ),
+    TYPE_VPD: (
+        "Vapor Pressure Deficit",
+        UnitOfPressure.KPA,
+        TYPE_SENSOR,
+        SensorDeviceClass.PRESSURE,
+        "mdi:gauge",
+        S_METRIC,
         SensorStateClass.MEASUREMENT,
     ),
 }
