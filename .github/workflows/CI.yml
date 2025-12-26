@@ -1,17 +1,11 @@
-name: Linting
+name: CI
 
 on:
-  push:
-    branches:
-      - main
-      - master
-      - dev
   pull_request:
-  schedule:
-    - cron: "0 0 * * *"
+    branches: [master]
 
 env:
-  DEFAULT_PYTHON: 3.9
+  DEFAULT_PYTHON: 3.14
 
 jobs:
   pre-commit:
@@ -61,3 +55,36 @@ jobs:
 
       - name: Hassfest validation
         uses: "home-assistant/actions/hassfest@master"
+
+  pytest:
+    runs-on: "ubuntu-latest"
+    name: Pytest
+    steps:
+      - name: Check out the repository
+        uses: "actions/checkout@v3"
+
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v3.1.1
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+
+      - name: Upgrade pip
+        run: |
+          pip install --constraint=.github/workflows/constraints.txt pip
+          pip --version
+
+      - name: Install dependencies
+        run: |
+          pip install --constraint=.github/workflows/constraints.txt -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov pytest-homeassistant-custom-component
+
+      - name: Run pytest
+        run: |
+          pytest tests/ -v --cov=custom_components.integration_ecowitt --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+          verbose: true
