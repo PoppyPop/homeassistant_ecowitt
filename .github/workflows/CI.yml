@@ -81,10 +81,3 @@ jobs:
       - name: Run pytest
         run: |
           pytest tests/ -v --cov=custom_components.integration_ecowitt --cov-report=xml
-
-      - name: Write coverage in pull request comment
-        uses: "paambaati/codeclimate-action@v3.0.3"
-        with:
-          coverageCommand: "echo 'Skipping coverage generation'"
-          coverageLocations: "./coverage.xml"
-          githubToken: "${{ secrets.GITHUB_TOKEN }}"
