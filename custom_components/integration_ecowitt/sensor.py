@@ -7,7 +7,6 @@ from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import PERCENTAGE
-from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from . import async_add_ecowitt_entities
@@ -56,7 +55,7 @@ class EcowittSensor(EcowittEntity, SensorEntity):
             # The lightning time is reported in UTC, hooray.
             if self._dc == SensorDeviceClass.TIMESTAMP:
                 if not isinstance(self._ws.last_values[self._key], int):
-                    return STATE_UNKNOWN
+                    return None
                 return dt_util.as_local(
                     dt_util.utc_from_timestamp(self._ws.last_values[self._key])
                 ).isoformat()
@@ -67,7 +66,7 @@ class EcowittSensor(EcowittEntity, SensorEntity):
         _LOGGER.warning(
             "Sensor %s not in last update, check range or battery", self._key
         )
-        return STATE_UNKNOWN
+        return None
 
     @property
     def native_unit_of_measurement(self):

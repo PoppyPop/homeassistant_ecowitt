@@ -176,6 +176,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         await web_server.stop()
         listener_task.cancel()
 
+    entry.async_on_unload(close_server)
+
     def check_imp_metric_sensor(sensor):
         """Check if this is the wrong sensor for our config (imp/metric)."""
         # Is this a metric or imperial sensor, lookup and skip
@@ -460,7 +462,7 @@ class EcowittEntity(Entity):
         return {
             "identifiers": {(DOMAIN, self._stationinfo[DATA_PASSKEY])},
             "name": dname,
-            "manufacturer": DOMAIN,
+            "manufacturer": "Ecowitt",
             "model": self._stationinfo[DATA_MODEL],
             "sw_version": self._stationinfo[DATA_STATIONTYPE],
             # "via_device": (DOMAIN, self._stationinfo[DATA_STATIONTYPE]),
@@ -469,7 +471,9 @@ class EcowittEntity(Entity):
 
     async def async_added_to_hass(self):
         """Add an listener."""
-        async_dispatcher_connect(self.hass, DOMAIN, self._update_callback)
+        self.async_on_remove(
+            async_dispatcher_connect(self.hass, DOMAIN, self._update_callback)
+        )
 
     @callback
     async def remove_entity(self, discovery_info=None):

@@ -41,6 +41,7 @@ class EcowittConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for the Ecowitt."""
 
     VERSION = 1
+    MINOR_VERSION = 1
 
     async def async_step_import(self, device_config):
         """Import a configuration.yaml config, if any."""
