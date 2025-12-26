@@ -100,6 +100,7 @@ while True:
 
         usedParam["dateutc"] = datetime.now().strftime("%Y-%m-%d+%H:%M:%S")
         usedParam["tempinc"] = 20 + randrange(10) / 10.0
+        usedParam["tempinf"] = usedParam["tempinc"] * 9 / 5 + 32
 
         params = urllib.parse.urlencode(usedParam)
         print(params)

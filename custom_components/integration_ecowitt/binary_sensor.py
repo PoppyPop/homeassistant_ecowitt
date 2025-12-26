@@ -42,7 +42,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class EcowittBinarySensor(EcowittEntity, BinarySensorEntity):
     """Definition of a binary sensor."""
 
-    def __init__(self, hass, entry, key, name, dc, uom, icon, sc):
+    def __init__(self, hass, entry, key: str, name: str, dc, uom, icon, sc) -> None:
         """Initialize the sensor."""
         super().__init__(hass, entry, key, name)
         self._icon = icon
@@ -50,7 +50,7 @@ class EcowittBinarySensor(EcowittEntity, BinarySensorEntity):
         self._dc = dc
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
         if self._key in self._ws.last_values:
             if self._ws.last_values[self._key] > 0:

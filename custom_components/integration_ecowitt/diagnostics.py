@@ -15,7 +15,7 @@ async def async_get_config_entry_diagnostics(
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry.
 
-    Includes the last 3 messages received by the integration (payloads),
+    Includes the last N messages received by the integration (payloads),
     with sensitive fields redacted.
     """
 
