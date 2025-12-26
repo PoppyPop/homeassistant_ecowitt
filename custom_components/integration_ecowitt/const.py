@@ -32,6 +32,7 @@ DATA_FREQ = "freq"
 DATA_MODEL = "model"
 DATA_READY = "ready"
 REG_ENTITIES = "registered"
+DATA_LAST_MESSAGES = "last_messages"
 
 DEFAULT_PORT = 4199
 

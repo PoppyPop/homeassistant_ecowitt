@@ -39,6 +39,7 @@ from .const import DOMAIN
 from .const import ECOWITT_PLATFORMS
 from .const import IGNORED_SENSORS
 from .const import REG_ENTITIES
+from .const import DATA_LAST_MESSAGES
 from .const import S_IMPERIAL
 from .const import S_METRIC
 from .const import S_METRIC_MS
@@ -132,6 +133,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     ecowitt_data[DATA_STATION] = {}
     ecowitt_data[DATA_READY] = False
     ecowitt_data[REG_ENTITIES] = {}
+    ecowitt_data[DATA_LAST_MESSAGES] = []
     for pl in ECOWITT_PLATFORMS:
         ecowitt_data[REG_ENTITIES][pl] = []
 
@@ -284,6 +286,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     async def _async_ecowitt_update_cb(weather_data):
         """Primary update callback called from pyecowitt."""
         _LOGGER.debug("Primary update callback triggered.")
+
+        try:
+            # Record diagnostics: keep last 3 messages
+            msg_list = ecowitt_data[DATA_LAST_MESSAGES]
+            msg_list.append({"timestamp": time.time(), "data": dict(weather_data)})
+            if len(msg_list) > 3:
+                del msg_list[0 : len(msg_list) - 3]
+        except Exception as e:
+            _LOGGER.debug(f"Failed to record diagnostics message: {e}")
 
         new_sensors = {}
         old_sensors = []
