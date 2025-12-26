@@ -22,6 +22,10 @@ ECOWITT_PLATFORMS = ["sensor", "binary_sensor"]
 TYPE_SENSOR = "sensor"
 TYPE_BINARY_SENSOR = "binary_sensor"
 DOMAIN = "integration_ecowitt"
+
+# Timeouts and limits
+SENSOR_TIMEOUT_SECONDS = 300  # 5 minutes before sensor state is assumed
+MAX_DIAGNOSTIC_MESSAGES = 3  # Number of recent messages to keep for diagnostics
 DATA_CONFIG = "config"
 DATA_OPTIONS = "options"
 DATA_ECOWITT = "ecowitt_listener"
@@ -32,6 +36,7 @@ DATA_FREQ = "freq"
 DATA_MODEL = "model"
 DATA_READY = "ready"
 REG_ENTITIES = "registered"
+DATA_LAST_MESSAGES = "last_messages"
 
 DEFAULT_PORT = 4199
 

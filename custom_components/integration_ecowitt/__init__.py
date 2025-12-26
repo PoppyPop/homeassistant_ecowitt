@@ -28,6 +28,8 @@ from .const import CONF_UNIT_SYSTEM_METRIC_MS
 from .const import CONF_UNIT_WIND
 from .const import CONF_UNIT_WINDCHILL
 from .const import DATA_ECOWITT
+from .const import MAX_DIAGNOSTIC_MESSAGES
+from .const import SENSOR_TIMEOUT_SECONDS
 from .const import DATA_FREQ
 from .const import DATA_MODEL
 from .const import DATA_OPTIONS
@@ -39,6 +41,7 @@ from .const import DOMAIN
 from .const import ECOWITT_PLATFORMS
 from .const import IGNORED_SENSORS
 from .const import REG_ENTITIES
+from .const import DATA_LAST_MESSAGES
 from .const import S_IMPERIAL
 from .const import S_METRIC
 from .const import S_METRIC_MS
@@ -132,6 +135,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     ecowitt_data[DATA_STATION] = {}
     ecowitt_data[DATA_READY] = False
     ecowitt_data[REG_ENTITIES] = {}
+    ecowitt_data[DATA_LAST_MESSAGES] = []
     for pl in ECOWITT_PLATFORMS:
         ecowitt_data[REG_ENTITIES][pl] = []
 
@@ -164,11 +168,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if entry.options[CONF_UNIT_WINDCHILL] == W_TYPE_HYBRID:
         web_server.set_windchill(WINDCHILL_HYBRID)
 
-    hass.loop.create_task(web_server.listen())
+    # Start the web server listener task
+    listener_task = hass.loop.create_task(web_server.listen())
 
     async def close_server(*args):
         """Close the ecowitt server."""
         await web_server.stop()
+        listener_task.cancel()
+
+    entry.async_on_unload(close_server)
 
     def check_imp_metric_sensor(sensor):
         """Check if this is the wrong sensor for our config (imp/metric)."""
@@ -273,10 +281,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _LOGGER.error("No sensors found to monitor, check device config.")
             return False
 
-        # for component in ECOWITT_PLATFORMS:
-        #     hass.async_create_task(
-        #         await hass.config_entries.async_forward_entry_setups(entry, component)
-        #     )
         await hass.config_entries.async_forward_entry_setups(entry, ECOWITT_PLATFORMS)
 
         ecowitt_data[DATA_READY] = True
@@ -284,6 +288,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     async def _async_ecowitt_update_cb(weather_data):
         """Primary update callback called from pyecowitt."""
         _LOGGER.debug("Primary update callback triggered.")
+
+        try:
+            # Record diagnostics: keep last N messages
+            msg_list = ecowitt_data[DATA_LAST_MESSAGES]
+            msg_list.append({"timestamp": time.time(), "data": dict(weather_data)})
+            if len(msg_list) > MAX_DIAGNOSTIC_MESSAGES:
+                del msg_list[0 : len(msg_list) - MAX_DIAGNOSTIC_MESSAGES]
+        except Exception as e:
+            _LOGGER.debug("Failed to record diagnostics message: %s", e, exc_info=True)
 
         new_sensors = {}
         old_sensors = []
@@ -297,7 +310,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             if sensor not in SENSOR_TYPES:
                 if sensor not in IGNORED_SENSORS:
                     _LOGGER.warning(
-                        "Unhandled sensor type %s value %s, " + "file a PR.",
+                        "Unhandled sensor type %s value %s, file a PR.",
                         sensor,
                         weather_data[sensor],
                     )
@@ -449,7 +462,7 @@ class EcowittEntity(Entity):
         return {
             "identifiers": {(DOMAIN, self._stationinfo[DATA_PASSKEY])},
             "name": dname,
-            "manufacturer": DOMAIN,
+            "manufacturer": "Ecowitt",
             "model": self._stationinfo[DATA_MODEL],
             "sw_version": self._stationinfo[DATA_STATIONTYPE],
             # "via_device": (DOMAIN, self._stationinfo[DATA_STATIONTYPE]),
@@ -458,7 +471,9 @@ class EcowittEntity(Entity):
 
     async def async_added_to_hass(self):
         """Add an listener."""
-        async_dispatcher_connect(self.hass, DOMAIN, self._update_callback)
+        self.async_on_remove(
+            async_dispatcher_connect(self.hass, DOMAIN, self._update_callback)
+        )
 
     @callback
     async def remove_entity(self, discovery_info=None):
@@ -472,7 +487,10 @@ class EcowittEntity(Entity):
             )
 
             _LOGGER.debug(
-                f"Found entity {entity_id} for key {self._key} -> Uniqueid: {self.unique_id}"
+                "Found entity %s for key %s -> Uniqueid: %s",
+                entity_id,
+                self._key,
+                self.unique_id,
             )
             if entity_id:
                 registry.async_remove(entity_id)
@@ -485,6 +503,6 @@ class EcowittEntity(Entity):
     @property
     def assumed_state(self) -> bool:
         """Return whether the state is based on actual reading from device."""
-        if (self._ws.lastupd + 5 * 60) < time.time():
+        if (self._ws.lastupd + SENSOR_TIMEOUT_SECONDS) < time.time():
             return True
         return False

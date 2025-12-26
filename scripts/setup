@@ -9,3 +9,6 @@ python3 -m pip install --requirement requirements.txt
 python3 -m pip install --requirement .github/workflows/constraints.txt
 
 pre-commit install
+
+sudo apt-get update
+sudo apt-get install -y ffmpeg libturbojpeg0

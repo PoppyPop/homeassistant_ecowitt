@@ -1,15 +1,18 @@
-name: Draft a release note
+name: Release Drafter
+
 on:
   push:
+    # branches to consider in the event; optional, defaults to all
     branches:
       - main
       - master
+
 jobs:
-  draft_release:
-    name: Release Drafter
+  update_release_draft:
     runs-on: ubuntu-latest
     steps:
-      - name: Run release-drafter
-        uses: release-drafter/release-drafter@v5.19.0
+      - uses: release-drafter/release-drafter@v6
+        with:
+          config-name: release-drafter.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
