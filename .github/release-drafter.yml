@@ -1,29 +1,41 @@
+name-template: "v$NEXT_PATCH_VERSION 🌟"
+tag-template: "v$NEXT_PATCH_VERSION"
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
+no-changes-template: "No changes."
+
 categories:
-  - title: ":boom: Breaking Changes"
-    label: "breaking"
-  - title: ":rocket: Features"
-    label: "enhancement"
-  - title: ":fire: Removals and Deprecations"
-    label: "removal"
-  - title: ":beetle: Fixes"
-    label: "bug"
-  - title: ":racehorse: Performance"
-    label: "performance"
-  - title: ":rotating_light: Testing"
-    label: "testing"
-  - title: ":construction_worker: Continuous Integration"
-    label: "ci"
-  - title: ":books: Documentation"
-    label: "documentation"
-  - title: ":hammer: Refactoring"
-    label: "refactoring"
-  - title: ":lipstick: Style"
-    label: "style"
-  - title: ":package: Dependencies"
+  - title: "🚀 Features"
     labels:
-      - "dependencies"
-      - "build"
+      - "feature"
+      - "enhancement"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "bug"
+      - "fix"
+  - title: "🧰 Maintenance"
+    labels:
+      - "chore"
+      - "maintenance"
+  - title: "📝 Documentation"
+    labels:
+      - "documentation"
+
+exclude-labels:
+  - "skip-changelog"
+  - "duplicate"
+  - "question"
+  - "invalid"
+  - "wontfix"
+
+sort-by: merged_at
+autolabeler:
+  - label: "feature"
+    title: ["feat", "feature"]
+  - label: "bug"
+    title: ["fix", "bug"]
+
 template: |
   ## Changes
-
   $CHANGES
+
+  $CONTRIBUTORS
