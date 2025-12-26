@@ -20,14 +20,9 @@ jobs:
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
-      - name: Upgrade pip
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip --version
-
       - name: Install Python modules
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pre-commit black flake8 reorder-python-imports
+          pip install -r .github/workflows/constraints.txt -r requirements.txt
 
       - name: Run pre-commit on all files
         run: |
@@ -78,7 +73,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --constraint=.github/workflows/constraints.txt -r requirements.txt
+          pip install -r .github/workflows/constraints.txt -r requirements.txt
 
       - name: Run pytest
         run: |
